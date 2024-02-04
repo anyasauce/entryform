@@ -104,3 +104,20 @@ img {
     border-radius: 5px;
     display: inline-block;
 }
+
+#resetButton {
+    display: none;
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    padding: 10px;
+    background-color: #0E0808; 
+    color: #0E0808;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#resetButton:hover {
+    background-color: #0E0808; 
+}
