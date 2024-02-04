@@ -112,10 +112,11 @@ img {
     right: 10px;
     padding: 10px;
     background-color: #0E0808; 
-    color: #0E0808;
+    color: black;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-size: 20px;
 }
 
 #resetButton:hover {
