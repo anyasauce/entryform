@@ -233,7 +233,8 @@ document.addEventListener('DOMContentLoaded', function () {
         return regex1.includes(regex2) || regex2.includes(regex1);
     }
 });
-document.addEventListener('DOMContentLoaded', function () {
+
+window.onload = function () {
     var countdownContainer = document.getElementById('countdown-container');
     var countdownTimerElement = document.getElementById('countdown-timer');
     var form = document.getElementById('entryForm');
@@ -312,10 +313,10 @@ document.addEventListener('DOMContentLoaded', function () {
         resetClicked = true;
         showResetButton();
     }
-});
 
-resetButton.addEventListener('click', function () {
-    resetClicked = true;
-    localStorage.setItem('resetClicked', resetClicked);
-    window.resetCountdown();
-});
+    resetButton.addEventListener('click', function () {
+        resetClicked = true;
+        localStorage.setItem('resetClicked', resetClicked);
+        window.resetCountdown();
+    });
+};
