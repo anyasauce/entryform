@@ -186,6 +186,7 @@ document.addEventListener('DOMContentLoaded', function () {
     
 });
 
+
 document.addEventListener('DOMContentLoaded', function () {
     var existingEntries = localStorage.getItem('giveawayEntries');
     var entries = existingEntries ? JSON.parse(existingEntries) : [];
@@ -209,8 +210,8 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        if (entries.some(entry => entry.name === name)) {
-            alert("You have already submitted your name.");
+        if (entries.some(entry => isSimilarName(name, entry.name))) {
+            alert("You have already submitted a similar name.");
             return;
         }
 
@@ -224,7 +225,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         document.getElementById('name').value = "";
     };
+
+    function isSimilarName(name1, name2) {
+        var regex1 = name1.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+        var regex2 = name2.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+
+        return regex1.includes(regex2) || regex2.includes(regex1);
+    }
 });
-
-
-
