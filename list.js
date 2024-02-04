@@ -228,8 +228,104 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function isSimilarName(name1, name2) {
         var regex1 = name1.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-        var regex2 = name2.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+        var regex2 = name2.replace(/[^a-zA-Zss0-9]/g, '').toLowerCase();
 
         return regex1.includes(regex2) || regex2.includes(regex1);
     }
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+    var countdownContainer = document.getElementById('countdown-container');
+    var countdownTimerElement = document.getElementById('countdown-timer');
+    var form = document.getElementById('entryForm');
+
+    var countdownHours = 0.002; // chamge timer
+    var countdownEndTime = localStorage.getItem('giveawayCountdownEndTime');
+    var countdownActive = countdownEndTime && new Date(countdownEndTime) > new Date();
+
+    if (countdownActive) {
+        startCountdown();
+    }
+
+    function startCountdown() {
+        function updateCountdown() {
+            var currentTime = new Date();
+            var endTime = new Date(countdownEndTime);
+            var timeDifference = endTime - currentTime;
+
+            if (timeDifference <= 0) {
+                clearInterval(countdownInterval);
+                countdownActive = false;
+                countdownTimerElement.textContent = 'Countdown Expired';
+                enableForm();
+            } else {
+                var hours = Math.floor(timeDifference / (1000 * 60 * 60));
+                var minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+
+                countdownTimerElement.textContent = formatTime(hours) + ':' + formatTime(minutes) + ':' + formatTime(seconds);
+            }
+        }
+
+        updateCountdown(); 
+
+        var countdownInterval = setInterval(updateCountdown, 1000);
+    }
+
+    function formatTime(time) {
+        return time < 10 ? '0' + time : time;
+    }
+
+    function enableForm() {
+        document.getElementById('name').disabled = true;
+        form.querySelector('button').disabled = true;
+    }
+
+    window.submitEntry = function() {
+        if (!countdownActive) {
+            alert('Form submission is not allowed after the countdown has expired.');
+            return;
+        }
+
+        var name = document.getElementById('name').value.trim();
+
+        if (name === "") {
+            alert("Please enter a valid name.");
+            return;
+        }
+
+        alert("Entry submitted successfully!");
+        document.getElementById('name').value = "";
+    };
+
+    window.resetCountdown = function () {
+        var now = new Date();
+        var futureTime = new Date(now.getTime() + countdownHours * 60 * 60 * 1000);
+
+        countdownEndTime = futureTime.toISOString();
+        localStorage.setItem('giveawayCountdownEndTime', countdownEndTime);
+
+        countdownActive = true;
+        startCountdown();
+    };
+
+    window.resetCountdown();
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    window.resetCountdown = function () {
+        var now = new Date();
+        var futureTime = new Date(now.getTime() + countdownHours * 60 * 60 * 1000);
+
+        countdownEndTime = futureTime.toISOString();
+        localStorage.setItem('giveawayCountdownEndTime', countdownEndTime);
+
+        countdownActive = true;
+        startCountdown();
+    };
+
+    window.resetCountdown();
+});
+
+
