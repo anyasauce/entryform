@@ -228,22 +228,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function isSimilarName(name1, name2) {
         var regex1 = name1.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-        var regex2 = name2.replace(/[^a-zA-Zss0-9]/g, '').toLowerCase();
+        var regex2 = name2.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
 
         return regex1.includes(regex2) || regex2.includes(regex1);
     }
 });
-
 document.addEventListener('DOMContentLoaded', function () {
     var countdownContainer = document.getElementById('countdown-container');
     var countdownTimerElement = document.getElementById('countdown-timer');
     var form = document.getElementById('entryForm');
+    var resetButton = document.getElementById('resetButton');
 
-    var countdownHours = 0.002; // chamge timer
+    var countdownHours = 24; // Set the countdown hours here
     var countdownEndTime = localStorage.getItem('giveawayCountdownEndTime');
     var countdownActive = countdownEndTime && new Date(countdownEndTime) > new Date();
+    var resetClicked = false; 
 
-    if (countdownActive) {
+    if (countdownActive && !resetClicked) {
+        showResetButton();
         startCountdown();
     }
 
@@ -267,7 +269,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        updateCountdown(); 
+        updateCountdown();
 
         var countdownInterval = setInterval(updateCountdown, 1000);
     }
@@ -281,24 +283,10 @@ document.addEventListener('DOMContentLoaded', function () {
         form.querySelector('button').disabled = true;
     }
 
-    window.submitEntry = function() {
-        if (!countdownActive) {
-            alert('Form submission is not allowed after the countdown has expired.');
-            return;
-        }
-
-        var name = document.getElementById('name').value.trim();
-
-        if (name === "") {
-            alert("Please enter a valid name.");
-            return;
-        }
-
-        alert("Entry submitted successfully!");
-        document.getElementById('name').value = "";
-    };
-
     window.resetCountdown = function () {
+        if (!resetClicked) {
+        }
+
         var now = new Date();
         var futureTime = new Date(now.getTime() + countdownHours * 60 * 60 * 1000);
 
@@ -309,23 +297,25 @@ document.addEventListener('DOMContentLoaded', function () {
         startCountdown();
     };
 
-    window.resetCountdown();
+    function showResetButton() {
+        setTimeout(function () {
+            resetButton.style.display = 'inline-block';
+        }, 5000);
+    }
+
+    window.addEventListener('beforeunload', function () {
+        localStorage.setItem('resetClicked', resetClicked);
+    });
+
+    var previousResetClicked = localStorage.getItem('resetClicked');
+    if (previousResetClicked === 'true') {
+        resetClicked = true;
+        showResetButton();
+    }
 });
 
-document.addEventListener('DOMContentLoaded', function () {
-
-    window.resetCountdown = function () {
-        var now = new Date();
-        var futureTime = new Date(now.getTime() + countdownHours * 60 * 60 * 1000);
-
-        countdownEndTime = futureTime.toISOString();
-        localStorage.setItem('giveawayCountdownEndTime', countdownEndTime);
-
-        countdownActive = true;
-        startCountdown();
-    };
-
+resetButton.addEventListener('click', function () {
+    resetClicked = true;
+    localStorage.setItem('resetClicked', resetClicked);
     window.resetCountdown();
 });
-
-
